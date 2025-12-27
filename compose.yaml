@@ -1,0 +1,92 @@
+x-backend: &backend-image
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: the_backend_image:latest
+
+products:
+  backend:
+    <<: *backend-image
+    container_name: the_backend
+    command: >
+      sh -c " echo 'Running migrations...' && python manage.py migrate --noinput && echo 'Collecting static files...' && python manage.py collectstatic --noinput --clear && echo 'Starting Gunicorn...' && gunicorn lineinproject.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120"
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - the_line_in-static-data:/app/staticfiles
+      - the_line_in-media-data:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f https://resort-apiv1.thamjidthachu.dev//healthz/ || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  celery-worker:
+    <<: *backend-image
+    container_name: the_celery_worker
+    env_file:
+      - .env
+    entrypoint: []
+    command: [ "celery", "-A", "lineinproject", "worker", "--loglevel=info" ]
+    volumes:
+      - the_line_in-media-data:/app/media
+    depends_on:
+      - backend
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  celery-beat:
+    <<: *backend-image
+    container_name: the_celery_beat
+    env_file:
+      - .env
+    entrypoint: []
+    command: [ "celery", "-A", "lineinproject", "beat", "--loglevel=info" ]
+    volumes:
+      - the_line_in-media-data:/app/media
+    depends_on:
+      - backend
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  redis:
+    container_name: the_redis
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    container_name: the_database
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - the_line_in-postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  the_line_in-postgres-data:
+  the_line_in-media-data:
+  the_line_in-static-data:
