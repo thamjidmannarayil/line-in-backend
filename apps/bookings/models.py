@@ -17,7 +17,7 @@ class Booking(TimeStampedModel, ActiveModel):
     booking_number = models.CharField(max_length=50, unique=True, editable=False)
     booking_date = models.DateField(help_text="Date of the booking/reservation")
     booking_time = models.TimeField(null=True, blank=True, help_text="Time of the booking (if applicable)")
-    number_of_guests = models.PositiveIntegerField(default=1)
+    number_of_products = models.PositiveIntegerField(default=1)
     
     # Status and Payment
     status = models.CharField(max_length=24, choices=BookingStatusChoices.choices, default=BookingStatusChoices.PENDING)

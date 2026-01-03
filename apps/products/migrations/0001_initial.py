@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('is_active', models.BooleanField(default=True)),
                 ('is_deleted', models.BooleanField(default=False)),
                 ('title', models.CharField(max_length=256)),
-                ('file', models.FileField(blank=True, max_length=256, null=True, upload_to='service_advertisement')),
+                ('file', models.FileField(blank=True, max_length=256, null=True, upload_to='product_advertisement')),
                 ('link', models.URLField(blank=True, null=True)),
             ],
             options={

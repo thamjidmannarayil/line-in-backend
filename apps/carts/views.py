@@ -68,7 +68,7 @@ class AddToCartView(APIView):
             )
 
             # Get the product
-            product = get_object_or_404(Product, id=serializer.validated_data['service_id'], is_active=True)
+            product = get_object_or_404(Product, id=serializer.validated_data['product_id'], is_active=True)
 
             # Check if item already exists in cart
             cart_item, created = CartItem.objects.get_or_create(

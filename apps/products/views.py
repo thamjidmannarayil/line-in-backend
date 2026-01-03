@@ -48,14 +48,14 @@ class ProductReviewsView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        product = get_object_or_404(Product, slug=self.kwargs['service_slug'])
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
         return product.product_comment.all().order_by('-created_at')
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        product = get_object_or_404(Product, slug=self.kwargs['service_slug'])
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
         user = self.request.user
 
         serializer.save(
@@ -123,8 +123,8 @@ class FavoriteListCreateView(ListCreateAPIView):
 class FavoriteDeleteView(DestroyAPIView):
     serializer_class = FavoriteSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'service_id'
-    lookup_url_kwarg = 'service_id'
+    lookup_field = 'product_id'
+    lookup_url_kwarg = 'product_id'
 
     def get_queryset(self):
-        return Favorite.objects.filter(user=self.request.user, service__id=self.kwargs.get('service_id'))
+        return Favorite.objects.filter(user=self.request.user, product__id=self.kwargs.get('product_id'))

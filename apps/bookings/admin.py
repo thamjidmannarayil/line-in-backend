@@ -18,7 +18,7 @@ class BookingAdmin(admin.ModelAdmin):
     inlines = [PaymentInline]
     
     list_display = [
-        'booking_number', 'booking_date', 'number_of_guests', 'status_badge', 'payment_status_badge', 
+        'booking_number', 'booking_date', 'number_of_products', 'status_badge', 'payment_status_badge', 
         'total_amount', 'created_at'
     ]
     
@@ -36,8 +36,8 @@ class BookingAdmin(admin.ModelAdmin):
         ('Booking Information', {
             'fields': ('booking_number', 'user', 'order', 'status', 'payment_status')
         }),
-        ('Reservation Details', {
-            'fields': ('booking_date', 'booking_time', 'number_of_guests', 'special_requests', 'subtotal', 'tax', 'total_amount')
+        ('Product Details', {
+            'fields': ('booking_date', 'booking_time', 'number_of_products', 'special_requests', 'subtotal', 'tax', 'total_amount')
         }),
         ('Admin', {
             'fields': ('admin_notes', 'is_active', 'is_deleted'),

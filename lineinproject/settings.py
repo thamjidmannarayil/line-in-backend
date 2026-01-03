@@ -60,16 +60,16 @@ INSTALLED_APPS = [
 
 # Jazzmin Admin Theme Settings
 JAZZMIN_SETTINGS = {
-    "site_title": "Line In",
-    "site_header": "Line In",
-    "site_brand": "Line In",
-    "site_logo": "admin/img/blue_in_indigo.jpg",
-    "login_logo": "admin/img/blue_in_indigo.jpg",
+    "site_title": "Line Inn",
+    "site_header": "Line Inn",
+    "site_brand": "Line Inn",
+    "site_logo": "admin/img/line-inn.png",
+    "login_logo": "admin/img/line-inn-logo.png",
     "login_logo_dark": None,
     "site_logo_classes": "img-circle",
     "site_icon": None,
-    "welcome_sign": "Welcome to Line In Admin",
-    "copyright": "Line In",
+    "welcome_sign": "Line Inn Admin",
+    "copyright": "Line Inn",
     # Use the actual app_label.model_name for your custom user model
     "search_model": ["authentication.user"],
     "user_avatar": None,

@@ -14,7 +14,7 @@ from utils.choices import AvailabilityChoices
 
 class Advertisement(TimeStampedModel, ActiveModel):
     title = models.CharField(max_length=256)
-    file = models.FileField(upload_to="service_advertisement", max_length=256, null=True, blank=True)
+    file = models.FileField(upload_to="product_advertisement", max_length=256, null=True, blank=True)
     link = models.URLField(null=True, blank=True)
 
     def __str__(self):

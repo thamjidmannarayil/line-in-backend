@@ -5,13 +5,13 @@ from apps.products.serializers import ProductListSerializer
 
 class CartItemSerializer(serializers.ModelSerializer):
     product = ProductListSerializer(read_only=True)
-    service_id = serializers.IntegerField(write_only=True, required=False)
+    product_id = serializers.IntegerField(write_only=True, required=False)
     total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = CartItem
         fields = [
-            'id', 'product', 'service_id', 'quantity', 'unit_price', 'total_price',
+            'id', 'product', 'product_id', 'quantity', 'unit_price', 'total_price',
             'booking_date', 'booking_time', 'special_requests', 'is_active', 'created_at'
         ]
         read_only_fields = ['id', 'total_price', 'created_at']
@@ -46,28 +46,29 @@ class CartSerializer(serializers.ModelSerializer):
         items = []
         for cart_item in obj.cart_items.filter(is_active=True):
             product = cart_item.product
-            service_image = ''
+            product_image = ''
             if product and hasattr(product, 'file_set'):
                 file_qs = product.file_set.all()
                 if file_qs.exists():
                     file_obj = file_qs.first()
                     if hasattr(file_obj, 'images') and file_obj.images:
-                        service_image = str(file_obj.images.url)
+                        product_image = str(file_obj.images.url)
             item = {
                 'id': cart_item.id,
-                'service_id': product.id if product else None,
-                'service_name': getattr(product, 'name', None),
-                'service_price': str(getattr(product, 'price', '')),
+                'product_id': product.id if product else None,
+                'product_name': getattr(product, 'name', None),
+                'product_price': str(getattr(product, 'price', '')),
                 'quantity': cart_item.quantity,
                 'subtotal': str(cart_item.total_price),
-                'service_slug': getattr(product, 'slug', None),
-                'service_image': service_image,
-                'service_duration': getattr(product, 'time', None),
-                'service_description': getattr(product, 'synopsis', None),
+                'product_slug': getattr(product, 'slug', None),
+                'product_image': product_image,
+                'product_duration': getattr(product, 'time', None),
+                'product_description': getattr(product, 'synopsis', None),
                 'unit': getattr(product, 'unit', None),
                 'rating': getattr(product, 'rating', None) if hasattr(product, 'rating') else None,
                 'review_count': getattr(product, 'review_count', None) if hasattr(product, 'review_count') else None,
                 'is_active': cart_item.is_active,
+                'special_requests': cart_item.special_requests,
                 'created_at': cart_item.created_at,
             }
             items.append(item)
@@ -78,13 +79,13 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 class AddToCartSerializer(serializers.Serializer):
-    service_id = serializers.IntegerField()
+    product_id = serializers.IntegerField()
     quantity = serializers.IntegerField(min_value=1, default=1)
     booking_date = serializers.DateField(required=False)
     booking_time = serializers.TimeField(required=False)
     special_requests = serializers.CharField(max_length=500, required=False)
     
-    def validate_service_id(self, value):
+    def validate_product_id(self, value):
         from apps.products.models import Product
         try:
             Product.objects.get(id=value, is_active=True)

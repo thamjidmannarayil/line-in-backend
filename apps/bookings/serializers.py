@@ -61,9 +61,9 @@ class BookingCreateSerializer(serializers.ModelSerializer):
         
         # Validate guest count
         number_of_guests = attrs.get('number_of_guests', 1)
-        for service_data in products:
-            product = service_data.get('product')
-            quantity = service_data.get('quantity', 1)
+        for product_data in products:
+            product = product_data.get('product')
+            quantity = product_data.get('quantity', 1)
             
             # Check min/max people constraints
             if product.min_people and quantity < product.min_people:
@@ -79,7 +79,7 @@ class BookingCreateSerializer(serializers.ModelSerializer):
         return attrs
     
     def create(self, validated_data):
-        services_data = validated_data.pop('products')
+        products_data = validated_data.pop('products')
         
         # Get user from request if authenticated
         request = self.context.get('request')

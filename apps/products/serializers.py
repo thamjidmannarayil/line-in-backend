@@ -88,11 +88,11 @@ class AdvertiseSerializer(serializers.ModelSerializer):
 
 class FavoriteSerializer(serializers.ModelSerializer):
     product = ProductListSerializer(read_only=True)
-    service_id = serializers.PrimaryKeyRelatedField(
+    product_id = serializers.PrimaryKeyRelatedField(
         queryset=Product.objects.all(), source='product', write_only=True
     )
 
     class Meta:
         model = Favorite
-        fields = ['id', 'product', 'service_id', 'created_at']
+        fields = ['id', 'product', 'product_id', 'created_at']
 

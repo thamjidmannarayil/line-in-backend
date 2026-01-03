@@ -25,7 +25,7 @@ class CartAdmin(admin.ModelAdmin):
 class CartItemAdmin(admin.ModelAdmin):
     list_display = ('id', 'cart', 'product', 'quantity', 'unit_price', 'total_price', 'is_active')
     list_filter = ('is_active', 'created_at')
-    search_fields = ('service__name', 'cart__user__username')
+    search_fields = ('product__name', 'cart__user__username')
     readonly_fields = ('total_price', 'created_at', 'updated_at')
 
 
@@ -71,5 +71,5 @@ class OrderDetailAdmin(admin.ModelAdmin):
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('id', 'order', 'product', 'quantity', 'unit_price', 'total_price', 'status')
     list_filter = ('status', 'created_at')
-    search_fields = ('service__name', 'order__order_number', 'order__customer_name')
+    search_fields = ('product__name', 'order__order_number', 'order__customer_name')
     readonly_fields = ('total_price', 'created_at', 'updated_at')
