@@ -30,10 +30,10 @@ def create_checkout_session(booking):
             line_items.append({
                 'price_data': {
                     'currency': 'aed',
-                    'unit_amount': int(item.unit_price * 100),  # Convert to cents
+                    'unit_amount': int(item.unit_price * 100),
                     'product_data': {
                         'name': item.product.name,
-                        'description': f"{item.product.synopsis or 'Resort product'}",
+                        'description': f"{item.product.synopsis or 'Line-in product'}",
                         'images': [],
                     },
                 },
@@ -66,8 +66,8 @@ def create_checkout_session(booking):
                 'booking_id': str(booking.id),
                 'guest_name': booking.order.customer_name,
             },
-            success_url=f"{settings.PAYMENT_SUCCESS_URL}?session_id={{CHECKOUT_SESSION_ID}}&booking_number={booking.booking_number}",
-            cancel_url=f"{settings.PAYMENT_CANCEL_URL}?booking_number={booking.booking_number}",
+            success_url=f"{settings.PAYMENT_SUCCESS_URL}?session_id={{CHECKOUT_SESSION_ID}}&booking_number={booking.booking_number}&order_number={booking.order.order_number}",
+            cancel_url=f"{settings.PAYMENT_CANCEL_URL}?booking_number={booking.booking_number}&order_number={booking.order.order_number}",
         )
         
         logger.info(f"Stripe checkout session created for booking {booking.booking_number}: {checkout_session.id}")

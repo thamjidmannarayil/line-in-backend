@@ -115,15 +115,19 @@ class OrderItemSerializer(serializers.ModelSerializer):
         ]
 
 class OrderListSerializer(serializers.ModelSerializer):
+    total_items = serializers.SerializerMethodField()
     
     class Meta:
         model = OrderDetail
         fields = [
-            'order_number', 'status', 'payment_status', 'total_amount', 'fulfillment_date'
+            'order_number', 'status', 'total_amount', 'fulfillment_date', 'total_items'
         ]
         read_only_fields = [
-            'order_number', 'total_amount', 'fulfillment_date'
+            'order_number', 'total_amount', 'fulfillment_date', 'total_items'
         ]
+    
+    def get_total_items(self, obj):
+        return obj.order_items.count()
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
