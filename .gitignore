@@ -96,9 +96,6 @@ staticfiles/
 # Node modules (if present for local frontend tooling)
 node_modules/
 
-product_images
-
-
 # mkdocs documentation
 /site
 
