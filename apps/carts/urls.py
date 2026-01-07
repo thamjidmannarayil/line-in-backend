@@ -19,6 +19,6 @@ urlpatterns = [
     path('checkout/', CheckoutCartView.as_view(), name='checkout-cart'),
     # Order URLs
     path('orders/', OrderListView.as_view(), name='order-list'),
-    path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
-    path('orders/<int:order_id>/complete-payment/', CompletePaymentView.as_view(), name='complete-payment'),
+    path('orders/<str:order_number>/', OrderDetailView.as_view(), name='order-detail'),
+    path('orders/<str:order_number>/complete-payment/', CompletePaymentView.as_view(), name='complete-payment'),
 ]

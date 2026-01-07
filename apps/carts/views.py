@@ -10,7 +10,7 @@ from utils.choices import BookingStatusChoices, PaymentMethodChoices, PaymentSta
 from .models import Cart, CartItem, OrderDetail, OrderItem
 from .serializers import (
     CartSerializer, CartItemSerializer, AddToCartSerializer,
-    UpdateCartItemSerializer, OrderDetailSerializer, CheckoutSerializer
+    UpdateCartItemSerializer, OrderListSerializer, OrderDetailSerializer, CheckoutSerializer
 )
 from apps.products.models import Product
 from .models import CartItem  # Ensure CartItem is imported before use
@@ -226,7 +226,7 @@ class CheckoutCartView(APIView):
                 booking.order = order
                 booking.booking_date = timezone.now().date()
                 booking.booking_time = timezone.now().time()
-                booking.number_of_guests = cart.get_items_count()
+                booking.number_of_products = cart.get_items_count()
                 booking.subtotal = cart.subtotal
                 booking.tax = cart.tax
                 booking.total_amount = cart.total_amount
@@ -238,7 +238,7 @@ class CheckoutCartView(APIView):
                     order=order,
                     booking_date=timezone.now().date(),
                     booking_time=timezone.now().time(),
-                    number_of_guests=cart.get_items_count(),
+                    number_of_products=cart.get_items_count(),
                     status=BookingStatusChoices.PENDING,
                     payment_status=PaymentStatusChoices.INITIATED,
                     subtotal=cart.subtotal,
@@ -293,7 +293,7 @@ class CheckoutCartView(APIView):
 
 class OrderListView(generics.ListAPIView):
     """List user's orders"""
-    serializer_class = OrderDetailSerializer
+    serializer_class = OrderListSerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
@@ -304,6 +304,7 @@ class OrderDetailView(generics.RetrieveAPIView):
     """Retrieve a specific order"""
     serializer_class = OrderDetailSerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = 'order_number'
     
     def get_queryset(self):
         return OrderDetail.objects.filter(user=self.request.user)
@@ -313,8 +314,8 @@ class CompletePaymentView(APIView):
     """Mark order as completed and close cart after successful payment"""
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, order_id):
-        order = get_object_or_404(OrderDetail, id=order_id, user=request.user)
+    def post(self, request, order_number):
+        order = get_object_or_404(OrderDetail, order_number=order_number, user=request.user)
 
         if order.payment_status == PaymentStatusChoices.COMPLETED:
             return Response({'error': 'Order already paid'}, status=status.HTTP_400_BAD_REQUEST)

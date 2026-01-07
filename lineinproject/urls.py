@@ -25,8 +25,9 @@ urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     path('', include('apps.index.urls'), name='api-index'),
     path('api/v1/auth/', include('apps.authentication.urls'), name='api-auth'),
-    path('api/v1/products/', include('apps.products.urls'), name='products'),
-    path('api/v1/contacts/', include('apps.contacts.urls'), name='contacts'),
-    path('api/v1/bookings/', include('apps.bookings.urls'), name='bookings'),
-    path('api/v1/cart/', include('apps.carts.urls'), name='cart'),
+    path('api/v1/faq/', include('apps.faq.urls'), name='api-faq'),
+    path('api/v1/products/', include('apps.products.urls'), name='api-products'),
+    path('api/v1/contacts/', include('apps.contacts.urls'), name='api-contacts'),
+    path('api/v1/bookings/', include('apps.bookings.urls'), name='api-bookings'),
+    path('api/v1/cart/', include('apps.carts.urls'), name='api-cart'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

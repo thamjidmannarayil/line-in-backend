@@ -21,6 +21,16 @@ class Advertisement(TimeStampedModel, ActiveModel):
         return self.title
 
 
+class Categories(TimeStampedModel, ActiveModel):
+    name = models.CharField(max_length=40)
+    slug = models.SlugField(unique=True, blank=True)
+    description = models.TextField(null=True)
+    icon = models.ImageField(upload_to="category_icons", max_length=256, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Product(TimeStampedModel, ActiveModel):
     name = models.CharField(max_length=40)
     slug = models.SlugField(unique=True, blank=True)
@@ -31,7 +41,7 @@ class Product(TimeStampedModel, ActiveModel):
     stock_available = models.IntegerField()
     availability = models.CharField(max_length=20, choices=AvailabilityChoices.choices, default=AvailabilityChoices.AVAILABLE)
     policy = RichTextField(null=True)
-
+    category = models.ManyToManyField(Categories, related_name='products')
     product_comment = GenericRelation('comment')
 
     def __str__(self):
