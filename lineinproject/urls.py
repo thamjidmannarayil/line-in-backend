@@ -30,4 +30,5 @@ urlpatterns = [
     path('api/v1/contacts/', include('apps.contacts.urls'), name='api-contacts'),
     path('api/v1/bookings/', include('apps.bookings.urls'), name='api-bookings'),
     path('api/v1/cart/', include('apps.carts.urls'), name='api-cart'),
+    path('api/v1/account/', include('apps.account.urls'), name='api-account'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

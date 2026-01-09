@@ -1,7 +1,14 @@
 from rest_framework import serializers
 
 from apps.authentication.serializers import UserSerializer
-from .models import File, Product, Comment, Advertisement, Favorite
+from .models import File, Product, Comment, Advertisement, Favorite, Categories
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categories
+        fields = ['id', 'name', 'slug', 'description', 'icon']
+
 
 
 class FileSerializer(serializers.ModelSerializer):

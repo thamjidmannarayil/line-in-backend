@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'apps.index',
     'apps.faq',
     'apps.authentication',
+    'apps.account',
     'apps.products',
     'apps.contacts',
     'apps.bookings',
