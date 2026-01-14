@@ -64,7 +64,7 @@ class File(models.Model):
 
 class Comment(TimeStampedModel, ActiveModel):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField(default=0)
+    rating = models.FloatField(default=0.0)
     message = models.CharField(max_length=256)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)

@@ -9,8 +9,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Product, Comment, Advertisement, Favorite
-from .serializers import ProductsSerializer, CommentsSerializer, ProductListSerializer, AdvertiseSerializer, FavoriteSerializer
+from .models import Product, Comment, Advertisement, Favorite, Categories
+from .serializers import (
+    ProductsSerializer, CommentsSerializer, ProductListSerializer, AdvertiseSerializer, FavoriteSerializer, CategorySerializer
+)
 
 
 class HomeView(APIView):
@@ -21,6 +23,12 @@ class HomeView(APIView):
         serializer = ProductsSerializer(products, many=True)
         return Response(serializer.data, status=HTTP_200_OK)
 
+class CategoryListView(ListAPIView):
+    queryset = Categories.objects
+    serializer_class = CategorySerializer
+    permission_classes = [AllowAny]
+    pagination_class = None
+
 
 class ProductListView(ListAPIView):
     queryset = Product.objects.order_by('-created_at')
@@ -28,6 +36,21 @@ class ProductListView(ListAPIView):
     permission_classes = [AllowAny]
     pagination_class = None
 
+    def get_queryset(self):
+        category = self.request.query_params.get('category')
+        sort = self.request.query_params.get('sort')
+        order = self.request.query_params.get('order')
+        queryset = self.queryset.filter(is_active=True)
+        if category:
+            queryset = queryset.filter(category__slug=category)
+
+        if sort and order:
+            if sort not in ['price', 'stock_available', 'name']:
+                queryset = queryset.order_by(f'-{sort}' if order == 'desc' else f'{sort}')
+            elif sort in ['rating']:
+                queryset = queryset.order_by(f'-{sort}' if order == 'desc' else f'{sort}')
+
+        return queryset
 
 class ProductDetailView(RetrieveAPIView):
     queryset = Product.objects.all()
